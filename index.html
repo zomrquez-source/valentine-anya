@@ -28,13 +28,13 @@ body {
 }
 
 .envelope {
-    font-size:120px;
+    font-size:180px; /* Bigger envelope */
     animation: float 2s infinite ease-in-out;
 }
 
 @keyframes float {
     0%{transform:translateY(0)}
-    50%{transform:translateY(-15px)}
+    50%{transform:translateY(-20px)}
     100%{transform:translateY(0)}
 }
 
@@ -155,9 +155,9 @@ src="https://media3.giphy.com/media/v1.Y2lkPTZjMDliOTUyNW5xaThqYjFiYWlkajdtdWcyZ
 </div>
 
 <!-- 🔊 SOUNDS -->
-
 <audio id="bgMusic" loop>
-<source src="music.mp3.mp3" type="audio/mpeg">
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
 
 <audio id="yesSound"
 src="https://www.myinstants.com/media/sounds/fahhhhhhhhhhh.mp3"></audio>
@@ -171,15 +171,22 @@ const env = document.getElementById("envelopeScreen");
 const main = document.getElementById("main");
 const bgMusic = document.getElementById("bgMusic");
 
+/* ---------- OPEN ENVELOPE ---------- */
 openBtn.onclick = () => {
     env.style.display = "none";
     main.style.display = "block";
+
+    // Play background music after user click (works on mobile too)
     bgMusic.volume = 0.5;
-    bgMusic.play().catch(()=>{});
+    const playPromise = bgMusic.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(error => {
+            console.log("Autoplay prevented. Will try again on user interaction.");
+        });
+    }
 };
 
 /* ---------- NO BUTTON RUN ---------- */
-
 const noBtn = document.getElementById("noBtn");
 
 function moveNo(){
@@ -196,7 +203,6 @@ noBtn.onclick = () => {
 };
 
 /* ---------- YES MODE ---------- */
-
 const yesBtn = document.getElementById("yesBtn");
 const overlay = document.getElementById("overlay");
 
