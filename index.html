@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Open Me 💌</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg,#ff4d6d,#ff8fa3);
+    color:white;
+    text-align:center;
+    overflow:hidden;
+}
+
+/* ---------- ENVELOPE SCREEN ---------- */
+
+#envelopeScreen {
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    perspective: 1000px; /* Needed for 3D */
+}
+
+/* Envelope container */
+.envelope-container {
+    position: relative;
+    width: 180px;
+    height: 120px;
+    cursor: pointer;
+}
+
+/* Top flap */
+.envelope-flap-top {
+    position: absolute;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(135deg,#ff8fa3,#ff4d6d);
+    top: 0;
+    left: 0;
+    transform-origin: bottom center;
+    border-radius: 8px 8px 0 0;
+    z-index: 3;
+}
+
+/* Bottom flap */
+.envelope-flap-bottom {
+    position: absolute;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(135deg,#ff4d6d,#ff8fa3);
+    bottom: 0;
+    left: 0;
+    transform-origin: top center;
+    border-radius: 0 0 8px 8px;
+    z-index: 2;
+}
+
+/* Envelope body (middle) */
+.envelope-body {
+    position: absolute;
+    width: 100%;
+    height: 60px;
+    top: 30px;
+    background: linear-gradient(135deg,#ff4d6d,#ff8fa3);
+    border-radius: 0 0 0 0;
+    z-index: 1;
+}
+
+/* Animate flaps */
+.envelope-container.open .envelope-flap-top {
+    animation: flapTop 5s forwards ease-in-out;
+}
+
+.envelope-container.open .envelope-flap-bottom {
+    animation: flapBottom 5s forwards ease-in-out;
+}
+
+/* Fade out envelope container */
+.envelope-container.open {
+    animation: fadeEnvelope 5s forwards ease-in-out;
+}
+
+@keyframes flapTop {
+    0% { transform: rotateX(0deg); }
+    50% { transform: rotateX(-120deg); }
+    100% { transform: rotateX(-180deg); opacity:0; }
+}
+
+@keyframes flapBottom {
+    0% { transform: rotateX(0deg); }
+    50% { transform: rotateX(60deg); }
+    100% { transform: rotateX(120deg); opacity:0; }
+}
+
+@keyframes fadeEnvelope {
+    0% { opacity:1; transform: scale(1); }
+    100% { opacity:0; transform: scale(1.5) translateY(-200px); }
+}
+
+/* ---------- MAIN PAGE ---------- */
+#main {
+    display:none;
+    padding-top:6vh;
+    transition: opacity 2s ease;
+    opacity: 0;
+}
+
+#main.show {
+    display:block;
+    opacity: 1;
+}
+
+.blur {
+    filter: blur(6px) brightness(.7);
+}
+
+.poem {
+    background: rgba(0,0,0,0.25);
+    padding:14px;
+    border-radius:12px;
+    display:inline-block;
+    margin:18px;
+}
+
+button {
+    font-size:18px;
+    padding:14px 24px;
+    margin:12px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+#yesBtn { background:#00e676; color:black; }
+#noBtn  { background:#212121; color:white; position:absolute; }
+
+/* ---------- YES OVERLAY ---------- */
+#overlay {
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    z-index:999;
+}
+
+#overlayText {
+    font-size:36px;
+    font-weight:bold;
+    margin-bottom:20px;
+    animation: throb 1s infinite;
+}
+
+@keyframes throb {
+    0%{transform:scale(1)}
+    50%{transform:scale(1.2)}
+    100%{transform:scale(1)}
+}
+
+#drakeGif {
+    width:320px;
+    max-width:90vw;
+    border-radius:14px;
+    animation: pop .6s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes pop {
+    0%{transform:scale(0)}
+    70%{transform:scale(1.2)}
+    100%{transform:scale(1)}
+}
+</style>
+</head>
+
+<body>
+
+<!-- 💌 ENVELOPE INTRO -->
+<div id="envelopeScreen">
+    <div class="envelope-container" id="envelope">
+        <div class="envelope-flap-top"></div>
+        <div class="envelope-body"></div>
+        <div class="envelope-flap-bottom"></div>
+    </div>
+    <button id="openBtn">Open Me</button>
+</div>
+
+<!-- 💘 MAIN PAGE -->
+<div id="main">
+
+<h1>🚨 Valentine Proposal Detected 🚨</h1>
+
+<div class="poem">
+roses are red, my jokes are bad,<br>
+be my Valentine, Anya, best decision you’ll ever have had.
+</div>
+
+<img width="240" style="border-radius:12px"
+src="https://i.imgflip.com/30b1gx.jpg">
+
+<div>
+<button id="yesBtn">YES 💘</button>
+<button id="noBtn">No 🙃</button>
+</div>
+
+</div>
+
+<!-- YES CELEBRATION -->
+<div id="overlay">
+<div id="overlayText">YOU ARE FOREVER RENZO’S</div>
+
+<img id="drakeGif"
+src="https://media3.giphy.com/media/v1.Y2lkPTZjMDliOTUyNW5xaThqYjFiYWlkajdtdWcyZ250ZDVlcGh1aXdpZW51YndqYnBucSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5xaOcLDE64VMF4LqqrK/giphy.gif">
+</div>
+
+<!-- 🔊 SOUNDS -->
+<audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="yesSound"
+src="https://www.myinstants.com/media/sounds/fahhhhhhhhhhh.mp3"></audio>
+
+<audio id="noSound"
+src="https://www.myinstants.com/media/sounds/hell-naw-dog-meme.mp3"></audio>
+
+<script>
+const openBtn = document.getElementById("openBtn");
+const envelopeContainer = document.getElementById("envelope");
+const env = document.getElementById("envelopeScreen");
+const main = document.getElementById("main");
+const bgMusic = document.getElementById("bgMusic");
+
+/* ---------- OPEN ENVELOPE ---------- */
+openBtn.onclick = () => {
+
+    // Animate flaps
+    envelopeContainer.classList.add("open");
+    openBtn.style.opacity = 0;
+
+    // Play background music
+    bgMusic.volume = 0.5;
+    const playPromise = bgMusic.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(error => {
+            console.log("Autoplay prevented. Will try again on user interaction.");
+        });
+    }
+
+    // Show main page after animation (~5s)
+    setTimeout(() => {
+        env.style.display = "none";
+        main.classList.add("show");
+    }, 5000);
+};
+
+/* ---------- NO BUTTON RUN ---------- */
+const noBtn = document.getElementById("noBtn");
+
+function moveNo(){
+    noBtn.style.left=Math.random()*(innerWidth-120)+"px";
+    noBtn.style.top=Math.random()*(innerHeight-60)+"px";
+}
+
+noBtn.onmouseover = moveNo;
+
+noBtn.onclick = () => {
+    document.getElementById("noSound").play();
+    bgMusic.pause();
+    moveNo();
+};
+
+/* ---------- YES MODE ---------- */
+const yesBtn = document.getElementById("yesBtn");
+const overlay = document.getElementById("overlay");
+
+yesBtn.onclick = () => {
+
+    bgMusic.pause();
+    document.getElementById("yesSound").play();
+
+    main.classList.add("blur");
+    overlay.style.display="flex";
+
+    const end = Date.now()+8000;
+
+    (function frame(){
+        confetti({
+            particleCount:6,
+            spread:100,
+            origin:{x:Math.random(), y:Math.random()-0.2}
+        });
+        if(Date.now()<end) requestAnimationFrame(frame);
+    })();
+
+    setTimeout(()=>{
+        overlay.style.display="none";
+        main.classList.remove("blur");
+    },8000);
+};
+</script>
+
+</body>
+</html>
